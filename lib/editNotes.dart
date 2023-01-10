@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'constants/servieces.dart';
 
@@ -13,16 +14,17 @@ class _EditNotesState extends State<EditNotes> {
   String? titleNotes;
   String? detailsNote;
 
-  late TextEditingController namecontroller = TextEditingController(text: notes[widget.index].noteTitle);
-  late TextEditingController passcontroller1 = TextEditingController(text:notes[widget.index].noteDetails);
+  late TextEditingController titleController = TextEditingController(text: notes[widget.index].noteTitle);
+  late TextEditingController detailsController = TextEditingController(text:notes[widget.index].noteDetails);
   @override
 
   void dispose() {
     // TODO: implement dispose
-    namecontroller.dispose();
-    passcontroller1.dispose();
+    titleController.dispose();
+    detailsController.dispose();
     super.dispose();
   }
+
 
   final mykey = GlobalKey<FormState>();
   @override
@@ -47,7 +49,7 @@ class _EditNotesState extends State<EditNotes> {
                 height: 20,
               ),
               TextFormField(
-                controller: namecontroller,
+                controller: titleController,
                 decoration: const InputDecoration(
                   prefixIcon: (Icon(Icons.person)), //icon inside box
                   // icon:(Icon(Icons.person)),//icon outside before box
@@ -70,7 +72,7 @@ class _EditNotesState extends State<EditNotes> {
               TextFormField(
                 maxLines: 15, // <-- SEE HERE
                 minLines: 5,
-                controller: passcontroller1,
+                controller: detailsController,
                 decoration: const InputDecoration(
                   prefixIcon: (Icon(Icons.lock)), //icon inside box
                   // icon:(Icon(Icons.lock)),//icon outside before box
@@ -102,23 +104,25 @@ class _EditNotesState extends State<EditNotes> {
                     onPressed: ()  {
                       if (mykey.currentState!.validate()) {
                         setState(() {
-                          notes.add(
-                            Services(
-                              creationDate: DateTime.now(),
-                              noteDetails: detailsNote.toString(),
-                              noteTitle: titleNotes.toString(),
-                            ),
-                          );
+                          //removing exiting index from widged.
                           notes.removeAt(widget.index);
-                          Navigator.pop(context);
-                          // Navigator.pushReplacement(
-                          //     context, MaterialPageRoute(builder: (context) => HomePage()));
+                          //adding new note.
+                          notes.add(
+                              Services(noteTitle: titleNotes.toString(),
+                                  noteDetails: detailsNote.toString(),
+                                  creationDate: DateTime.now()));
+                          //updating /saving existing data from widget.
+                          List<String> noteList = notes.map((notes) => jsonEncode(notes.toMap())).toList();
+                          pref!.setStringList('notes', noteList);
+
                         });
+                        // widget.onpressed();
+                        Navigator.pop(context);
 
                       }
                     },
                     child: const Text(
-                      "Submit",
+                      "Add Tusk",
                       style: TextStyle(
                           color: Colors.white,
                           fontSize: 18,

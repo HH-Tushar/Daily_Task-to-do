@@ -1,11 +1,11 @@
 
+import 'dart:convert';
 import 'package:flutter/material.dart';
-
 import 'constants/servieces.dart';
-import 'main.dart';
 
 class CreateNotes extends StatefulWidget {
-  const CreateNotes({Key? key,}) : super(key: key);
+  VoidCallback onpressed;
+   CreateNotes({Key? key,required this.onpressed}) : super(key: key);
 
   @override
   State<CreateNotes> createState() => _CreateNotesState();
@@ -16,14 +16,29 @@ class _CreateNotesState extends State<CreateNotes> {
   String? titleNotes;
   String? detailsNote;
 
-  final namecontroller = TextEditingController();
-  final passcontroller1 = TextEditingController();
+  TextEditingController titleNotesController=TextEditingController();
+  TextEditingController detailsNotesController=TextEditingController();
 
+
+  savenotes(){
+    setState(() {
+      notes.add(
+          Services(noteTitle: titleNotes.toString(),
+          noteDetails: detailsNote.toString(),
+          creationDate: DateTime.now()));
+
+      List<String> noteList = notes.map((notes) => jsonEncode(notes.toMap())).toList();
+      pref!.setStringList('notes', noteList);
+
+    });
+    widget.onpressed();
+    Navigator.pop(context);
+  }
 @override
   void dispose() {
     // TODO: implement dispose
-  namecontroller.dispose();
-  passcontroller1.dispose();
+  titleNotesController.dispose();
+  detailsNotesController.dispose();
     super.dispose();
   }
 
@@ -51,7 +66,7 @@ class _CreateNotesState extends State<CreateNotes> {
                 height: 20,
               ),
               TextFormField(
-                controller: namecontroller,
+                controller: titleNotesController,
                 decoration: const InputDecoration(
                   prefixIcon: (Icon(Icons.person)), //icon inside box
                   // icon:(Icon(Icons.person)),//icon outside before box
@@ -71,11 +86,12 @@ class _CreateNotesState extends State<CreateNotes> {
               const SizedBox(
                 height: 15,
               ),
+
               TextFormField(
                 maxLines: 10, // <-- SEE HERE
                 minLines: 5,
                 autocorrect: true,
-                controller: passcontroller1,
+                controller: detailsNotesController,
                 decoration: const InputDecoration(
                   alignLabelWithHint: true,
                   prefixIcon: (Icon(Icons.book_outlined)), //icon inside box
@@ -109,26 +125,17 @@ class _CreateNotesState extends State<CreateNotes> {
                   color: Colors.blueGrey,
                 ),
                 child: TextButton(
-                    onPressed: ()  {
-                      if (mykey.currentState!.validate()) {
-                        setState(() {
+                    onPressed:savenotes,
 
-                          notes.add(
-                            Services(
-                                creationDate: DateTime.now(),
-                                noteDetails: detailsNote.toString(),
-                                noteTitle: titleNotes.toString(),
-
-                            ),
-                          );
-                          notes.length;
-
-                           Navigator.push(
-                               context, MaterialPageRoute(builder: (context) => const MyApp()));
-                        });
-
-                      }
-                    },
+                    // onPressed: ()  {
+                    //   print('btn printed');
+                    //   setState((){
+                    //     savenotes;
+                    //     print('inside set state');
+                    //     Navigator.pop(context);
+                    //   });
+                    //
+                    // },
                     child: const Text(
                       "Submit",
                       style: TextStyle(

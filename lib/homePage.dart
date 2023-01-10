@@ -1,5 +1,9 @@
-import 'package:flutter/material.dart';
+import 'dart:convert';
+import 'dart:developer';
 
+import 'package:daily_task/viewNotes.dart';
+import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'constants/attentionScreen.dart';
 import 'constants/constants.dart';
 import 'constants/servieces.dart';
@@ -15,27 +19,53 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   String formateDateTime(DateTime date) {
-    return "${date.day}/${date.month}${date.year}";
+    return "${date.day}/${date.month}/${date.year}";
   }
 
-  bool dlt = false;
+  loadDate() async {
+    pref = await SharedPreferences.getInstance();
+    setState(() {
+      List<String>? noteList = pref?.getStringList('notes');
+      notes = noteList!
+          .map((eachElement) => Services.fromMap(jsonDecode(eachElement)))
+          .toList();
+    });
+  }
+
+  @override
+  void initState() {
+    loadDate();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: myAppBar("Daily Task"),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) => const CreateNotes()));
+          setState(() {
+            loadDate();
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => CreateNotes(
+                      //onpressed is used for callback to refresh database.which will let u see the update.
+                          onpressed: () {
+                            setState(() {
+                              loadDate();
+                            });
+                          },
+                        )));
+          });
         },
         child: const Icon(
           Icons.add_chart_sharp,
           size: 20,
         ),
       ),
-
       body: ListView.builder(
-        padding:const EdgeInsets.all(10),
+        padding: const EdgeInsets.all(10),
         itemCount: notes.length,
         itemBuilder: (BuildContext context, int index) {
           return ListTile(
@@ -47,29 +77,34 @@ class _HomePageState extends State<HomePage> {
             onTap: () {
               showDialog(
                   context: context,
-                  builder: (_) => Demo_Details(
-                        noteDetails: notes[index].noteDetails,
+                  builder: (_) => ViewNotes(index: index,
                       ));
 
               // print("request for details");
             },
             onLongPress: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => EditNotes(
-                            index: index,
-                          )));
+              setState(() {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => EditNotes(
+                              index: index,
+                            )));
+              });
             },
             trailing: GestureDetector(
               onTap: () async {
-               // print("dlt tabed");
+                // print("dlt tabed");
                 final confirmation = await showDialog(
                     context: context, builder: (_) => const AttentionScreen());
-               // print(confirmation);
+                // print(confirmation);
                 if (confirmation == true) {
-                  setState(() {
+                  setState(()  {
+                   //need some exta logic here
                     notes.removeAt(index);
+                    List<String> noteList = notes.map((notes) => jsonEncode(notes.toMap())).toList();
+                    pref!.setStringList('notes', noteList);
+
                   });
                 }
               },
@@ -78,63 +113,6 @@ class _HomePageState extends State<HomePage> {
           );
         },
       ),
-
-      // body:  SingleChildScrollView(
-      //   padding: const EdgeInsets.all(10),
-      //   physics: const AlwaysScrollableScrollPhysics(),
-      //   child: Column(
-      //     children: [
-      //         ListTile(
-      //           shape: RoundedRectangleBorder(
-      //             borderRadius: BorderRadius.circular(20),
-      //           ),
-      //           title:Text("day 1"),
-      //           subtitle: Text("Amader jibon da hoga mara"),
-      //             onTap:(){
-      //             print("request for details");
-      //             },
-      //           trailing:GestureDetector(
-      //             onTap: (){print("dlt tabed");
-      //             AttentionScreen();
-      //             },
-      //             child:const Icon(Icons.delete),
-      //           ),
-      //       ),
-      //
-      //       ListTile(
-      //         shape: RoundedRectangleBorder(
-      //           borderRadius: BorderRadius.circular(20),
-      //         ),
-      //         title:Text("day 2"),
-      //         subtitle: Text("Somrat ekta ganjakhor"),
-      //         onTap:(){print("request for details");},
-      //         trailing:GestureDetector(
-      //           onTap: (){print("dlt tabed");
-      //           AttentionScreen();
-      //           },
-      //           child:const Icon(Icons.delete),
-      //         ),
-      //       ),
-      //
-      //       ListTile(
-      //         shape: RoundedRectangleBorder(
-      //           borderRadius: BorderRadius.circular(20),
-      //         ),
-      //         title:Text("day 3"),
-      //         subtitle: const Text("Maiya Lagbo. hoga mara.yo yo honey singh amra sobai valo pola.ekhn edit kora baki"),
-      //         onTap:(){print("request for details");},
-      //         trailing:GestureDetector(
-      //           onTap: (){print("dlt tabed");
-      //           showDialog(
-      //               context: context,
-      //               builder: (_) => AttentionScreen());
-      //             },
-      //           child:const Icon(Icons.delete),
-      //         ),
-      //       ),
-      //     ],
-      //   ),
-      // ),
     );
   }
 }

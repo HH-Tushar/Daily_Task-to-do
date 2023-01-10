@@ -5,6 +5,9 @@ class AttentionScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(30),
+      ),
       title: const Text('AlertDialog Title'),
       content: SingleChildScrollView(
         child: ListBody(
@@ -32,21 +35,3 @@ class AttentionScreen extends StatelessWidget {
 }
 
 
-class Demo_Details extends StatelessWidget {
-  final String noteDetails;
-  const Demo_Details({Key? key, required this.noteDetails}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-      title: const Text('Note Datiels'),
-      content: SingleChildScrollView(
-        child: ListBody(
-          children:  <Widget>[
-            Text(noteDetails),
-          ],
-        ),
-      ),
-    );
-  }
-}
