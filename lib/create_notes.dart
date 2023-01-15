@@ -24,7 +24,7 @@ class _CreateNotesState extends State<CreateNotes> {
     setState(() {
       notes.add(
           Services(noteTitle: titleNotes.toString(),
-          noteDetails: detailsNote.toString(),
+          noteDetails: detailsNote?.length==null ?"This Note Does'nt Contain any Details":detailsNote.toString(),
           creationDate: DateTime.now()));
 
       List<String> noteList = notes.map((notes) => jsonEncode(notes.toMap())).toList();
@@ -47,6 +47,7 @@ class _CreateNotesState extends State<CreateNotes> {
 
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: myBackgroundColor,
       appBar: AppBar(
         title: const Text("Create New Notes"),
         centerTitle: true,
@@ -58,20 +59,17 @@ class _CreateNotesState extends State<CreateNotes> {
           key: mykey,
           child: Column(
             children: [
-              // SizedBox(
-              //   height: 250,
-              //   child: Image.asset("assets/pic/login.png",fit:BoxFit.cover),
-              // ),
+
               const SizedBox(
                 height: 20,
               ),
               TextFormField(
                 controller: titleNotesController,
                 decoration: const InputDecoration(
-                  prefixIcon: (Icon(Icons.person)), //icon inside box
+                  prefixIcon: (Icon(Icons.title)), //icon inside box
                   // icon:(Icon(Icons.person)),//icon outside before box
                   hintText: "Title",
-                  //labelText: "User name",
+                  labelText: "Title",
                   border: OutlineInputBorder(),
                 ),
                 onChanged: (value) => setState(() => titleNotes = value),
@@ -109,17 +107,15 @@ class _CreateNotesState extends State<CreateNotes> {
                 //   }
                 // },
               ),
-              const SizedBox(
-                height: 15,
-              ),
+
 
               const SizedBox(
-                height: 30,
+                height: 50,
               ),
 
               Container(
-                width: 100,
-                height: 40,
+                width: 200,
+                height: 45,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
                   color: Colors.blueGrey,
@@ -127,20 +123,11 @@ class _CreateNotesState extends State<CreateNotes> {
                 child: TextButton(
                     onPressed:savenotes,
 
-                    // onPressed: ()  {
-                    //   print('btn printed');
-                    //   setState((){
-                    //     savenotes;
-                    //     print('inside set state');
-                    //     Navigator.pop(context);
-                    //   });
-                    //
-                    // },
                     child: const Text(
-                      "Submit",
+                      "Add Task",
                       style: TextStyle(
                           color: Colors.white,
-                          fontSize: 18,
+                          fontSize: 20,
                           fontWeight: FontWeight.w400),
                     )),
               )

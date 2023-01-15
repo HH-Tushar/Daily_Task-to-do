@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'package:flutter/material.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -48,17 +49,14 @@ class Services{
 SharedPreferences? pref;
 
 List<Services> notes=[
-  // Services(
-  //     creationDate: DateTime.now(),
-  //     noteDetails: "Press Single Tab To see Details . Long Press To Edit Me ",
-  //     noteTitle: 'Tap Me'),
-  // Services(
-  //     creationDate: DateTime.now(),
-  //     noteDetails: "Press Single Tab To see Details . Long Press To Edit Me ",
-  //     noteTitle: 'Tap Me'),
-  // Services(
-  //     creationDate: DateTime.now(),
-  //     noteDetails: "Press Single Tab To see Details . Long Press To Edit Me ",
-  //     noteTitle: 'Tap Me'),
 ];
 
+const Color myAppbarColor=Color.fromRGBO(52, 150, 57, 1);
+const Color myBackgroundColor=Color.fromRGBO(233, 255, 235, 1);
+myAppBar(final title) {
+  return AppBar(
+    backgroundColor: myAppbarColor,
+    title: Text(title),
+    centerTitle: true,
+  );
+}

@@ -24,23 +24,29 @@ class _HomePageState extends State<HomePage> {
 
   loadDate() async {
     pref = await SharedPreferences.getInstance();
-    setState(() {
-      List<String>? noteList = pref?.getStringList('notes');
-      notes = noteList!
-          .map((eachElement) => Services.fromMap(jsonDecode(eachElement)))
-          .toList();
-    });
+    storeNotes();
   }
+
+storeNotes(){  setState(() {
+  List<String>? noteList = pref?.getStringList('notes');
+  notes = noteList!
+      .map((eachElement) => Services.fromMap(jsonDecode(eachElement)))
+      .toList();
+}
+);}
 
   @override
   void initState() {
     loadDate();
+    //storeNotes;
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBody: true,
+      backgroundColor: myBackgroundColor,
       appBar: myAppBar("Daily Task"),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -53,6 +59,7 @@ class _HomePageState extends State<HomePage> {
                       //onpressed is used for callback to refresh database.which will let u see the update.
                           onpressed: () {
                             setState(() {
+                              //storeNotes();
                               loadDate();
                             });
                           },
@@ -65,50 +72,53 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       body: ListView.builder(
-        padding: const EdgeInsets.all(10),
+        physics:ScrollPhysics(),
+        //padding: const EdgeInsets.all(10),
         itemCount: notes.length,
         itemBuilder: (BuildContext context, int index) {
-          return ListTile(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
-            ),
-            title: Text(notes[index].noteTitle),
-            subtitle: Text(formateDateTime(notes[index].creationDate)),
-            onTap: () {
-              showDialog(
-                  context: context,
-                  builder: (_) => ViewNotes(index: index,
-                      ));
+          return Padding(
+            padding: const EdgeInsets.only(top: 10,left: 8,right: 8),
+            child: ListTile(
+              selected: true,
+              selectedTileColor: Colors.green,
+              selectedColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+              title: Text("Title : "+notes[index].noteTitle),
+              subtitle: Text("Last Edited : "+formateDateTime(notes[index].creationDate)),
 
-              // print("request for details");
-            },
-            onLongPress: () {
-              setState(() {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => EditNotes(
-                              index: index,
-                            )));
-              });
-            },
-            trailing: GestureDetector(
-              onTap: () async {
-                // print("dlt tabed");
-                final confirmation = await showDialog(
-                    context: context, builder: (_) => const AttentionScreen());
-                // print(confirmation);
-                if (confirmation == true) {
-                  setState(()  {
-                   //need some exta logic here
-                    notes.removeAt(index);
-                    List<String> noteList = notes.map((notes) => jsonEncode(notes.toMap())).toList();
-                    pref!.setStringList('notes', noteList);
-
-                  });
-                }
+              onTap: () {
+                setState(() {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => ViewNotes(
+                                index: index, onPressed: () { setState(() {
+                                  loadDate();
+                                  print("successfully loaded data");
+                                }); },
+                              )));
+                });
               },
-              child: const Icon(Icons.delete),
+              trailing: GestureDetector(
+                onTap: () async {
+                  // print("dlt tabed");
+                  final confirmation = await showDialog(
+                      context: context, builder: (_) => const AttentionScreen());
+                  // print(confirmation);
+                  if (confirmation == true) {
+                    setState(()  {
+                     //need some exta logic here
+                      notes.removeAt(index);
+                      List<String> noteList = notes.map((notes) => jsonEncode(notes.toMap())).toList();
+                      pref!.setStringList('notes', noteList);
+
+                    });
+                  }
+                },
+                child: const Icon(Icons.delete),
+              ),
             ),
           );
         },

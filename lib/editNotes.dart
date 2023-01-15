@@ -11,8 +11,6 @@ class EditNotes extends StatefulWidget {
 }
 
 class _EditNotesState extends State<EditNotes> {
-  String? titleNotes;
-  String? detailsNote;
 
   late TextEditingController titleController = TextEditingController(text: notes[widget.index].noteTitle);
   late TextEditingController detailsController = TextEditingController(text:notes[widget.index].noteDetails);
@@ -30,9 +28,15 @@ class _EditNotesState extends State<EditNotes> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: myBackgroundColor,
+      
       appBar: AppBar(
+        backgroundColor: myAppbarColor,
         title: const Text("Edit Notes"),
         centerTitle: true,
+        leading: TextButton(onPressed:(){setState(() {
+          Navigator.of(context).pop(false);
+        });}, child: Icon(Icons.arrow_back,color: Colors.white,),),
       ),
       body: SingleChildScrollView(
         physics: const ScrollPhysics(),
@@ -51,13 +55,13 @@ class _EditNotesState extends State<EditNotes> {
               TextFormField(
                 controller: titleController,
                 decoration: const InputDecoration(
-                  prefixIcon: (Icon(Icons.person)), //icon inside box
+                  prefixIcon: (Icon(Icons.title)), //icon inside box
                   // icon:(Icon(Icons.person)),//icon outside before box
                   hintText: "Title",
                   //labelText: "User name",
                   border: OutlineInputBorder(),
                 ),
-                onChanged: (value) => setState(() => titleNotes = value),
+
                 textInputAction: TextInputAction.done,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -74,19 +78,15 @@ class _EditNotesState extends State<EditNotes> {
                 minLines: 5,
                 controller: detailsController,
                 decoration: const InputDecoration(
-                  prefixIcon: (Icon(Icons.lock)), //icon inside box
+                  prefixIcon: (Icon(Icons.sticky_note_2)), //icon inside box
                   // icon:(Icon(Icons.lock)),//icon outside before box
                   hintText: "Note Details",
                   labelText: "Note Details",
                   border: OutlineInputBorder(),
                 ),
-                onChanged: (value) => setState(() => detailsNote = value),
+
                 textInputAction: TextInputAction.done,
-                // validator: (value) {
-                //   if (value == null || value.isEmpty) {
-                //     return "Please enter a valid Password";
-                //   }
-                // },
+
               ),
               const SizedBox(
                 height: 45,
@@ -108,8 +108,8 @@ class _EditNotesState extends State<EditNotes> {
                           notes.removeAt(widget.index);
                           //adding new note.
                           notes.add(
-                              Services(noteTitle: titleNotes.toString(),
-                                  noteDetails: detailsNote.toString(),
+                              Services(noteTitle: titleController.text.toString(),
+                                  noteDetails: detailsController.text.toString(),
                                   creationDate: DateTime.now()));
                           //updating /saving existing data from widget.
                           List<String> noteList = notes.map((notes) => jsonEncode(notes.toMap())).toList();
@@ -117,7 +117,7 @@ class _EditNotesState extends State<EditNotes> {
 
                         });
                         // widget.onpressed();
-                        Navigator.pop(context);
+                        Navigator.of(context).pop(true);
 
                       }
                     },

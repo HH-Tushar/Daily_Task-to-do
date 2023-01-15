@@ -6,16 +6,10 @@ class AttentionScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return AlertDialog(
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(30),
+        borderRadius: BorderRadius.circular(15),
       ),
-      title: const Text('AlertDialog Title'),
-      content: SingleChildScrollView(
-        child: ListBody(
-          children: const <Widget>[
-            Text('Confirm Delate ?'),
-          ],
-        ),
-      ),
+      title: const Text('Confirm Delete.??'),
+
       actions: <Widget>[
         TextButton(
           child: const Text('Cancel'),
@@ -24,7 +18,7 @@ class AttentionScreen extends StatelessWidget {
           },
         ),
         TextButton(
-          child: const Text('Delete'),
+          child: const Text('Delete',style: TextStyle(color: Colors.red),),
           onPressed: () {
             Navigator.of(context).pop(true);
           },
