@@ -48,10 +48,9 @@ class Services{
 
 SharedPreferences? pref;
 
-List<Services> notes=[
-];
+List<Services> notes=[];
 
-const Color myAppbarColor=Color.fromRGBO(52, 150, 57, 1);
+const Color myAppbarColor=Color.fromRGBO(31, 121, 37, 1);
 const Color myBackgroundColor=Color.fromRGBO(233, 255, 235, 1);
 myAppBar(final title) {
   return AppBar(

@@ -121,6 +121,7 @@ class _CreateNotesState extends State<CreateNotes> {
                   color: Colors.blueGrey,
                 ),
                 child: TextButton(
+
                     onPressed:savenotes,
 
                     child: const Text(

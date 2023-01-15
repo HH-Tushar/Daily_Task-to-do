@@ -1,14 +1,14 @@
 import 'dart:convert';
-import 'dart:developer';
+
 
 import 'package:daily_task/viewNotes.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'constants/attentionScreen.dart';
-import 'constants/constants.dart';
+
 import 'constants/servieces.dart';
 import 'create_notes.dart';
-import 'editNotes.dart';
+
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -24,11 +24,12 @@ class _HomePageState extends State<HomePage> {
 
   loadDate() async {
     pref = await SharedPreferences.getInstance();
-    storeNotes();
+    if(pref!=null){storeNotes();}
+    //storeNotes();
   }
 
-storeNotes(){  setState(() {
-  List<String>? noteList = pref?.getStringList('notes');
+storeNotes(){  setState(()  {
+   List<String>? noteList = pref?.getStringList('notes');
   notes = noteList!
       .map((eachElement) => Services.fromMap(jsonDecode(eachElement)))
       .toList();
