@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Services{
+  final int nodeColor;
   final String noteTitle,noteDetails;
   final DateTime creationDate;
 
@@ -12,6 +13,7 @@ class Services{
   Services(
   { required this.noteTitle,
     required this.noteDetails,
+    required this.nodeColor,
     required this.creationDate,}
   );
 
@@ -25,6 +27,7 @@ class Services{
   Services.fromMap( Map<String,dynamic> map)
    : noteTitle=map['noteTitle'],
     noteDetails=map['noteDetails'],
+        nodeColor=map['nodeColor'],
     creationDate=DateTime.parse(map['creationDate'] as String);
 
 
@@ -40,6 +43,7 @@ class Services{
      return {
     'noteTitle':noteTitle,
     'noteDetails':noteDetails,
+       'nodeColor':nodeColor,
     'creationDate': creationDate.toString(),
   };
    }

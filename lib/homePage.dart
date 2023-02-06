@@ -75,13 +75,13 @@ storeNotes(){  setState(()  {
       body: ListView.builder(
         physics:ScrollPhysics(),
         //padding: const EdgeInsets.all(10),
-        itemCount: notes.length,
+        itemCount: notes.isNotEmpty?notes.length:0,
         itemBuilder: (BuildContext context, int index) {
           return Padding(
             padding: const EdgeInsets.only(top: 10,left: 8,right: 8),
             child: ListTile(
               selected: true,
-              selectedTileColor: Colors.green,
+              selectedTileColor:Color (notes[index].nodeColor),
               selectedColor: Colors.white,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10),

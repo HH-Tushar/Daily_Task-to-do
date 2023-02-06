@@ -15,24 +15,26 @@ class _CreateNotesState extends State<CreateNotes> {
 
   String? titleNotes;
   String? detailsNote;
+  late Color nodeColor = Colors.green;
 
   TextEditingController titleNotesController=TextEditingController();
   TextEditingController detailsNotesController=TextEditingController();
 
 
   savenotes(){
+    if(mykey.currentState!.validate()){
     setState(() {
       notes.add(
           Services(noteTitle: titleNotes.toString(),
           noteDetails: detailsNote?.length==null ?"This Note Does'nt Contain any Details":detailsNote.toString(),
-          creationDate: DateTime.now()));
+          creationDate: DateTime.now(), nodeColor:nodeColor.value));
 
       List<String> noteList = notes.map((notes) => jsonEncode(notes.toMap())).toList();
       pref!.setStringList('notes', noteList);
 
     });
     widget.onpressed();
-    Navigator.pop(context);
+    Navigator.pop(context);}
   }
 @override
   void dispose() {
@@ -76,7 +78,7 @@ class _CreateNotesState extends State<CreateNotes> {
                 textInputAction: TextInputAction.done,
                 validator: (value ){
                   if (value == null || value.isEmpty) {
-                    return "This field must be filled up";
+                    return "Note Must Have a Title";
                   }
                   return null;
                 },
@@ -118,9 +120,10 @@ class _CreateNotesState extends State<CreateNotes> {
                 height: 45,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
-                  color: Colors.blueGrey,
+                  color: nodeColor,
                 ),
                 child: TextButton(
+                  //onPressed: validator,
 
                     onPressed:savenotes,
 
@@ -136,6 +139,107 @@ class _CreateNotesState extends State<CreateNotes> {
           ),
         ),
       ),
+      floatingActionButton: Container(
+        width: 190,
+        height: 60,
+        decoration: BoxDecoration(
+            color: Colors.black12,
+            borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(15), topLeft: Radius.circular(15),bottomRight: Radius.circular(15))),
+        child: SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              SizedBox(
+                height:nodeColor==Colors.green? 40:35,
+                child: OutlinedButton(
+                  onPressed: () {setState(() {
+                    nodeColor=Colors.green;
+                  });},
+                  child: Text(''),
+                  style: OutlinedButton.styleFrom(
+                    backgroundColor: Colors.green,
+                    shape: CircleBorder(),
+                  ),
+                ),
+              ),
+
+              SizedBox(
+                height:nodeColor==Colors.deepPurple? 40:35,
+
+                child: OutlinedButton(
+                  onPressed: () {setState(() {
+                    nodeColor=Colors.deepPurple;
+                  });},
+                  child: Text(''),
+                  style: OutlinedButton.styleFrom(
+                    backgroundColor: Colors.deepPurple,
+                    shape: CircleBorder(),
+                  ),
+                ),
+              ),
+              SizedBox(
+                height:nodeColor==Colors.blueGrey? 40:35,
+                child: OutlinedButton(
+                  onPressed: () {setState(() {
+                    nodeColor=Colors.blueGrey;
+                  });},
+                  child: Text(''),
+                  style: OutlinedButton.styleFrom(
+                    backgroundColor: Colors.blueGrey,
+                    shape: CircleBorder(),
+                  ),
+                ),
+              ),
+              SizedBox(
+                height:nodeColor==Colors.indigo? 40:35,
+                child: OutlinedButton(
+                  onPressed: () {setState(() {
+                    nodeColor=Colors.indigo;
+                  });},
+                  child: Text(''),
+                  style: OutlinedButton.styleFrom(
+                    backgroundColor: Colors.indigo,
+                    shape: CircleBorder(),
+                  ),
+                ),
+              ),
+              SizedBox(
+                height:nodeColor==Colors.grey? 40:35,
+                child: OutlinedButton(
+                  onPressed: () {setState(() {
+                    nodeColor=Colors.grey;
+                  });},
+                  child: Text(''),
+                  style: OutlinedButton.styleFrom(
+                    backgroundColor: Colors.grey,
+                    shape: CircleBorder(),
+                  ),
+                ),
+              ),
+              SizedBox(
+                height:nodeColor==Colors.black? 40:35,
+                //width: 40,
+                child: OutlinedButton(
+                  onPressed: () {
+                    setState(() {
+                      nodeColor=Colors.black;
+                    });
+                  },
+                  child: Text(''),
+                  style: OutlinedButton.styleFrom(
+                    backgroundColor: Colors.black,
+                    shape: CircleBorder(),
+                  ),
+                ),
+              ),
+
+            ],
+          ),
+        ),
+      ),
+
     );
   }
 }

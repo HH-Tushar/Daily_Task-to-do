@@ -9,7 +9,7 @@ class AttentionScreen extends StatelessWidget {
         borderRadius: BorderRadius.circular(15),
       ),
       title: const Text('Confirm Delete.??'),
-
+      content: Text("This Note will be Permanently Deleted."),
       actions: <Widget>[
         TextButton(
           child: const Text('Cancel'),
